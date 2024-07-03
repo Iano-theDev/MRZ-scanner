@@ -5,11 +5,34 @@
 }
 .video-container {
     position: relative;
-    width: 100%;
-    height: 80%;
+    width: auto;
+    height: auto;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+/* 
+.video-element {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+} */
 
+.center-items {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: .3em;
+    }
+    .video-container {
+        height: 50%;
+    }
+}
