@@ -46,10 +46,10 @@ export class OcrViwerComponent {
   }
 
   prepareImageOutput = async () =>  {
-    const worker = Tesseract.createWorker({
-      // logger: m => console.log("[m]: ", m)
-    })
-
+    const worker = Tesseract.createWorker(
+      {logger: m => console.log("[m]: ", m)}
+  )
+    const imagePath = 
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');

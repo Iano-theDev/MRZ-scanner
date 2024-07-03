@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
+    "@google-cloud/vision": "^4.3.0",
+    "buffer": "^6.0.3",
     "ngx-webcam": "^0.4.1",
     "rxjs": "~7.8.0",
     "tesseract.js": "^2.1.1",
