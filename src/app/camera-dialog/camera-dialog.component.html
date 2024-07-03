@@ -5,12 +5,23 @@
         </mat-card-header> -->
         <mat-card-content>
             <div class="video-container"  *ngIf="camData">
-                <webcam [trigger]="$trigger" (imageCapture)="capture($event)" class="video-element"></webcam>
+                <webcam
+                class="video-element"
+                (imageCapture)="capture($event)"
+                [height]="500"
+                [width]="500"
+                [trigger]="$trigger"
+                [allowCameraSwitch]="true"
+                [switchCamera]="nextWebcamObservable"
+                ></webcam>
             </div>
         </mat-card-content>
         <mat-card-actions class="center-items">
             <button mat-button (click)="takeSnapshot()">
                 <mat-icon>photo_camera</mat-icon>
+            </button>
+            <button mat-button (click)="switchCamera(true)">
+                <mat-icon>cameraswitch</mat-icon>
             </button>
             <button mat-button (click)="closeDialog()">
                 <mat-icon>close</mat-icon>

@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable, Subject } from 'rxjs';
-import { WebcamImage, WebcamModule } from 'ngx-webcam';
+import { WebcamImage, WebcamModule, WebcamUtil } from 'ngx-webcam';
 
 @Component({
   selector: 'app-camera-dialog',
@@ -21,23 +21,35 @@ export class CameraDialogComponent implements OnInit{
   permisionStatus: string | undefined;
   camData: any = null;
   trigger: Subject<void> = new Subject<void>()
+  nextCamera: Subject<boolean | string > = new Subject<boolean | string>()
   capturedImage: any;
   stream: any
+  multipleCameras: boolean = false
+  deviceId!: string;
 
   ngOnInit(): void {
     this.checkPermision()
   }
 
   checkPermision = async () => {
-    this.stream = await navigator.mediaDevices.getUserMedia({video: {width: 50, height: 50}}).then((response) => {
-      this.permisionStatus = 'Allowed';
-      this.camData = response;
-      console.log("[camDate] in check permission is: ", this.camData);
+    // this.stream = await navigator.mediaDevices.getUserMedia({video: {width: 50, height: 50}}).then((response) => {
+    //   this.permisionStatus = 'Allowed';
+    //   this.camData = response;
+    //   console.log("[camData] in check permission is: ", this.camData);
       
-    }).catch(err => {
-      this.permisionStatus = 'Not Allowed';
-      console.log("[permissionStatus] in check permission is: ", this.permisionStatus);
-    })
+    // }).catch(err => {
+    //   this.permisionStatus = 'Not Allowed';
+    //   console.log("[permissionStatus] in check permission is: ", this.permisionStatus);
+    // })
+    WebcamUtil.getAvailableVideoInputs().then(
+      (mediaDevices: MediaDeviceInfo[]) => {
+        this.camData = mediaDevices
+        this.multipleCameras = mediaDevices && mediaDevices.length > 1
+        if (this.multipleCameras) console.log("Got something!");
+        else console.log("Only one or no cameras at all")
+        
+      }
+    )
   }
 
   get $trigger(): Observable<void> {
@@ -60,10 +72,17 @@ export class CameraDialogComponent implements OnInit{
     
   }
 
+  switchCamera (statusOrId: boolean | string) {
+    this.nextCamera.next(statusOrId);
+  }
+
   closeDialog() {
 
     this.dialogRef.close()
     console.log("Close Dialog");
     
+  }
+  public get nextWebcamObservable(): Observable<boolean | string> {
+    return this.nextCamera.asObservable();
   }
 }

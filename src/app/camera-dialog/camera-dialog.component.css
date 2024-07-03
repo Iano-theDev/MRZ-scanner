@@ -27,7 +27,7 @@
     align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .container {
         margin: 10px;
         padding: .3em;
