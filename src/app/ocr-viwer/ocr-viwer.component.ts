@@ -31,8 +31,8 @@ export class OcrViwerComponent {
       // height: '300px',
       width: 'auto',
       height: 'auto',
-      maxWidth: '50vw',
-      maxHeight: '96vh',
+      maxWidth: '90vw',
+      maxHeight: '100vh',
     })
 
     dialogRef.afterClosed().subscribe((result: WebcamImage) => {
