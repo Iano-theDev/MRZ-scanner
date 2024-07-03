@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon' 
 import { MatToolbarModule } from '@angular/material/toolbar' 
 import { MatCardModule } from '@angular/material/card' 
+import { MatProgressBarModule } from '@angular/material/progress-bar' 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { CameraDialogComponent } from '../camera-dialog/camera-dialog.component';
 import { WebcamImage } from 'ngx-webcam';
@@ -13,7 +14,7 @@ import * as Tesseract from 'tesseract.js';
 @Component({
   selector: 'app-ocr-viwer',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule],
   // imports: [CommonModule],
   templateUrl: './ocr-viwer.component.html',
   styleUrls: ['./ocr-viwer.component.css']
@@ -21,6 +22,7 @@ import * as Tesseract from 'tesseract.js';
 export class OcrViwerComponent {
   snapShot: any;
   outPutText: string = ''
+  textReady: boolean = true;
   constructor (private dialog: MatDialog, private _sanitizer: DomSanitizer) {}
 
   openCameraDialog() {
@@ -46,6 +48,7 @@ export class OcrViwerComponent {
   }
 
   prepareImageOutput = async () =>  {
+    this.textReady = false
     const worker = Tesseract.createWorker(
       {logger: m => console.log("[m]: ", m)}
   )
@@ -56,6 +59,7 @@ export class OcrViwerComponent {
     const { data: { text } } = await worker.recognize(this.snapShot);
     console.log("Text ", text);
     if (text) {
+      this.textReady =true
       this.outPutText = text
     }
     await worker.terminate();

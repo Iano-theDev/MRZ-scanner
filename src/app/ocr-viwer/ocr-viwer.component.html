@@ -31,6 +31,10 @@
                         <mat-card-subtitle>Output</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content class="box-size">
+                        
+                        <div *ngIf="!textReady" class="spaced">
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        </div>
                         {{outPutText}}
                     </mat-card-content>
                 </mat-card>
