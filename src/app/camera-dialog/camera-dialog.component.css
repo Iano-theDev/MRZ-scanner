@@ -55,4 +55,12 @@
     .video-container {
         height: 50%;
     }
+    .id-area {
+        width: 96%;
+        height: 40%;
+    }
+    .mrz-area {
+        width: 98%;
+        height: 35%;
+    }
 }
