@@ -4,18 +4,13 @@
           <mat-card-subtitle>Camera</mat-card-subtitle>
         </mat-card-header> -->
         <mat-card-content>
-            <div class="video-container"  *ngIf="camData">
-                <webcam
-                class="video-element"
-                (imageCapture)="capture($event)"
-    
-                [width]="1000"
-                [trigger]="$trigger"
-                [allowCameraSwitch]="true"
-                [switchCamera]="nextWebcamObservable"
-                ></webcam>
-                <div class="id-area">
-                    <div class="mrz-area"></div>
+            <div class="video-container" *ngIf="camData">
+                <webcam class="video-element" (imageCapture)="capture($event)" [width]="1000" [trigger]="$trigger"
+                    [allowCameraSwitch]="true" [switchCamera]="nextWebcamObservable"></webcam>
+                <div class="unused">
+                    <div class="id-area" #idArea>
+                        <div class="mrz-area"></div>
+                    </div>
                 </div>
             </div>
         </mat-card-content>
@@ -30,5 +25,5 @@
                 <mat-icon>close</mat-icon>
             </button>
         </mat-card-actions>
-      </mat-card>
+    </mat-card>
 </div>
