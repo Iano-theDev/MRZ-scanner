@@ -12,6 +12,26 @@
     justify-content: center;
     align-items: center;
 }
+
+.id-area {
+    position: absolute;
+    background-color: rgba(127, 255, 212, 0.205);
+    width: 80%;
+    height: 60%;
+    border: 5px green;
+    border-style: dashed;
+
+}
+
+.mrz-area {
+    position: absolute;
+    background-color: rgba(142, 59, 220, 0.296);
+    border: 5px blueviolet;
+    border-style: dashed;
+    width: 98%;
+    height: 35%;
+    bottom: 1px;
+}
 /* 
 .video-element {
     width: 100%; 

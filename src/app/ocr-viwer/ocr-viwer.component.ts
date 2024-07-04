@@ -63,8 +63,6 @@ export class OcrViwerComponent {
       this.outPutText = text
     }
     await worker.terminate();
-
-    
   }
 
   logSomething() {
