@@ -30,6 +30,7 @@ export class CameraDialogComponent implements OnInit {
   stream: any
   multipleCameras: boolean = false
   deviceId!: string;
+  cropping: boolean = false
 
   ngOnInit(): void {
     this.checkPermision()
@@ -72,7 +73,8 @@ export class CameraDialogComponent implements OnInit {
     // console.log("Snapshot taken", this.capturedImage);
 
     console.log("Snapshot taken");
-    this.dialogRef.close(this.capturedImage)
+    
+    this.dialogRef.close(this.capturedImage) // this line should only exectute after the image is cropped
     // this.stream.getTracks().forEach((track: any) => {
     //   track.stop()
     // });
@@ -92,4 +94,5 @@ export class CameraDialogComponent implements OnInit {
   public get nextWebcamObservable(): Observable<boolean | string> {
     return this.nextCamera.asObservable();
   }
+
 }

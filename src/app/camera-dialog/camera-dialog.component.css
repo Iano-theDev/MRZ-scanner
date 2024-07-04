@@ -37,7 +37,7 @@
     width: 80%;
     height: 60%;
     background-color: rgba(127, 255, 212, 0.205);
-    border: 2px green;
+    border: 2px rgb(96, 177, 96);
     border-style: dashed;
 
     /* flex */
@@ -49,8 +49,8 @@
 
 .mrz-area {
     position: absolute;
-    background-color: rgba(142, 59, 220, 0.296);
-    border: 2px rgb(177, 43, 226);
+    background-color: rgba(129, 63, 228, 0.296);
+    border: 2px rgba(165, 43, 226, 0.812);
     border-style: dashed;
     width: 98%;
     height: 35%;
