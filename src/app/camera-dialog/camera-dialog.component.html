@@ -1,5 +1,5 @@
 <div class="container">
-    <mat-card appearance="outlined">
+    <mat-card *ngIf="!croppingID && !croppingMRZ" appearance="outlined">
         <!-- <mat-card-header>
           <mat-card-subtitle>Camera</mat-card-subtitle>
         </mat-card-header> -->
@@ -24,6 +24,42 @@
             <button mat-button (click)="closeDialog()">
                 <mat-icon>close</mat-icon>
             </button>
+        </mat-card-actions>
+    </mat-card>
+    <mat-card *ngIf="croppingID" appearance="outlined">
+        <!-- <mat-card-header>
+          <mat-card-subtitle>Camera</mat-card-subtitle>
+        </mat-card-header> -->
+        <mat-card-content>
+            <div class="video-container" *ngIf="camData">
+                <image-cropper
+                [imageBase64]="imageToCrop"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="4 / 3"
+                [(transform)]="transform"
+                format="png"
+                (imageCropped)="imageCropped($event)"
+                (imageLoaded)="imageLoaded()"
+                (cropperReady)="cropperReady()"
+                (loadImageFailed)="loadImageFailed()">
+            </image-cropper>
+                <div class="unused">
+                    <div class="id-area" #idArea>
+                        <div class="mrz-area"></div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions class="center-items">
+            <button mat-button (click)="cropCurrentDimensions()">
+                <mat-icon>crop</mat-icon>
+            </button>
+            <!-- <button mat-button (click)="switchCamera(true)">
+                <mat-icon>cameraswitch</mat-icon>
+            </button>
+            <button mat-button (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button> -->
         </mat-card-actions>
     </mat-card>
 </div>

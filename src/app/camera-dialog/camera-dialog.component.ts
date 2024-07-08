@@ -6,22 +6,22 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable, Subject } from 'rxjs';
 import { WebcamImage, WebcamModule, WebcamUtil } from 'ngx-webcam';
+import { ImageCroppedEvent, ImageCropperComponent, ImageTransform } from 'ngx-image-cropper';
 import html2canvas from 'html2canvas';
-import { log } from 'console';
+
 
 @Component({
   selector: 'app-camera-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatCardModule, MatButtonModule, MatIconModule, WebcamModule],
+  imports: [CommonModule, MatDialogModule, MatCardModule, MatButtonModule, MatIconModule, WebcamModule, ImageCropperComponent],
   templateUrl: './camera-dialog.component.html',
   styleUrls: ['./camera-dialog.component.css']
 })
 
 export class CameraDialogComponent implements OnInit {
-  constructor(private dialogRef: MatDialogRef<CameraDialogComponent>) { }
-
+  
   @ViewChild('idArea') idArea!: ElementRef<HTMLDivElement>
-
+  
   permisionStatus: string | undefined;
   camData: any = null;
   trigger: Subject<void> = new Subject<void>()
@@ -30,7 +30,17 @@ export class CameraDialogComponent implements OnInit {
   stream: any
   multipleCameras: boolean = false
   deviceId!: string;
-  cropping: boolean = false
+  imageToCrop: any;
+  croppingID: boolean = false
+  croppingMRZ: boolean = false
+
+  transform: ImageTransform = {
+    translateUnit: 'px'
+};
+  
+  // test
+  croppedImage: any = '';
+  constructor(private dialogRef: MatDialogRef<CameraDialogComponent>) { }
 
   ngOnInit(): void {
     this.checkPermision()
@@ -65,6 +75,7 @@ export class CameraDialogComponent implements OnInit {
     console.log("[capture] taking a snap!");
     // const idAreaElement = this.idArea?.nativeElement
     this.capturedImage = event.imageAsDataUrl
+    this.imageToCrop = event.imageAsBase64
   }
 
 
@@ -73,8 +84,10 @@ export class CameraDialogComponent implements OnInit {
     // console.log("Snapshot taken", this.capturedImage);
 
     console.log("Snapshot taken");
-    
-    this.dialogRef.close(this.capturedImage) // this line should only exectute after the image is cropped
+    this.croppingID = true
+
+    // this line should only exectute after the image is cropped
+    // this.dialogRef.close(this.capturedImage)
     // this.stream.getTracks().forEach((track: any) => {
     //   track.stop()
     // });
@@ -93,6 +106,23 @@ export class CameraDialogComponent implements OnInit {
   }
   public get nextWebcamObservable(): Observable<boolean | string> {
     return this.nextCamera.asObservable();
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.objectUrl;
+  }
+
+  cropCurrentDimensions () {
+    this.dialogRef.close(this.croppedImage)
+  }
+  imageLoaded() {
+    // show cropper
+  }
+  cropperReady() {
+    // cropper ready
+  }
+  loadImageFailed() {
+    // show message
   }
 
 }
