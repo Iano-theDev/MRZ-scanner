@@ -8,7 +8,9 @@
                 <webcam class="video-element" (imageCapture)="capture($event)" [width]="1000" [trigger]="$trigger"
                     [allowCameraSwitch]="true" [switchCamera]="nextWebcamObservable"></webcam>
                 <div class="unused">
-                    <div class="id-area" #idArea>
+                    
+                    <div class="id-area" #webcamIdAreaRef>
+                        
                         <div class="mrz-area"></div>
                     </div>
                 </div>
@@ -27,31 +29,59 @@
         </mat-card-actions>
     </mat-card>
     <mat-card *ngIf="croppingID" appearance="outlined">
-        <!-- <mat-card-header>
-          <mat-card-subtitle>Camera</mat-card-subtitle>
-        </mat-card-header> -->
+        <mat-card-header>
+          <mat-card-subtitle>Crop out the green area</mat-card-subtitle>
+        </mat-card-header>
         <mat-card-content>
             <div class="video-container" *ngIf="camData">
-                <image-cropper
-                [imageBase64]="imageToCrop"
-                [maintainAspectRatio]="true"
-                [aspectRatio]="4 / 3"
-                [(transform)]="transform"
-                format="png"
-                (imageCropped)="imageCropped($event)"
-                (imageLoaded)="imageLoaded()"
-                (cropperReady)="cropperReady()"
-                (loadImageFailed)="loadImageFailed()">
-            </image-cropper>
+                <image-cropper [imageBase64]="imageToCrop"  [maintainAspectRatio]="false" [aspectRatio]="4 / 3"
+                    [(transform)]="transform" format="png" (imageCropped)="idCropped($event)"  [onlyScaleDown]="true"
+                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                </image-cropper>
                 <div class="unused">
-                    <div class="id-area" #idArea>
+                    <div class="id-area" #idAreaRef>
+                        <div class="hidden-mrz-area"></div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions class="center-items">
+            <button mat-button (click)="cropIdZone()">
+                <mat-icon>crop</mat-icon>
+            </button>
+            <!-- <button mat-button (click)="switchCamera(true)">
+                <mat-icon>cameraswitch</mat-icon>
+            </button>
+            <button mat-button (click)="closeDialog()">
+                <mat-icon>close</mat-icon>
+            </button> -->
+        </mat-card-actions>
+    </mat-card>
+    <mat-card *ngIf="croppingMRZ" appearance="outlined">
+        <mat-card-header>
+          <mat-card-subtitle>Cropp out the purple area!</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="video-container" *ngIf="camData">
+                <image-cropper [imageBase64]="imageToCrop"  [maintainAspectRatio]="false" [aspectRatio]="4 / 3"
+                    [(transform)]="transform" format="png" (imageCropped)="mrzCropped($event)"  [onlyScaleDown]="true"
+                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                </image-cropper>
+                <!-- <div class="cropper-container">
+                    <image-cropper [imageBase64]="imageToCrop"  [maintainAspectRatio]="false" [aspectRatio]="4 / 3"
+                    [(transform)]="transform" format="png" (imageCropped)="imageCropped($event)"  [onlyScaleDown]="true"
+                    (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                </image-cropper> 
+                </div> -->
+                <div class="unused">
+                    <div class="hidden-id-area" #idAreaRef>
                         <div class="mrz-area"></div>
                     </div>
                 </div>
             </div>
         </mat-card-content>
         <mat-card-actions class="center-items">
-            <button mat-button (click)="cropCurrentDimensions()">
+            <button mat-button (click)="cropMrzZone()">
                 <mat-icon>crop</mat-icon>
             </button>
             <!-- <button mat-button (click)="switchCamera(true)">

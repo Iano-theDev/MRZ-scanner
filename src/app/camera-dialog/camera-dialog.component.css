@@ -12,8 +12,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-
 }
 
 .unused {
@@ -34,24 +32,77 @@
 
 .id-area {
     position: absolute;
-    width: 80%;
-    height: 60%;
+    width: 100%;
+    height: 80%;
     background-color: rgba(127, 255, 212, 0.205);
     border: 2px rgb(96, 177, 96);
     border-style: dashed;
+    /* flex */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden-id-area {
+    position: absolute;
+    width: 100%;
+    height: 80%;
 
     /* flex */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cropper-container {
+    width: 80%;
+    height: 60%;
+    background-color: rgba(127, 255, 212, 0.205);
+    border: 2px rgb(80, 89, 16);
+    border-style: dashed;
+
+    /* flex */
+    /* position: relative; */
+    /* width: auto;
+    height: auto; */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 
 }
 
+.cropper-container img {
+    width: 80%;
+    height: auto;
+    background-color: rgba(127, 255, 212, 0.205);
+    border: 2px rgb(80, 89, 16);
+    border-style: dashed;
+
+    /* flex */
+    /* position: relative; */
+    /* width: auto;
+    height: auto; */
+    /* overflow: hidden; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+
 .mrz-area {
     position: absolute;
     background-color: rgba(129, 63, 228, 0.296);
     border: 2px rgba(165, 43, 226, 0.812);
     border-style: dashed;
+    width: 98%;
+    height: 35%;
+    bottom: 1px;
+}
+
+.hidden-mrz-area {
+    position: absolute;
     width: 98%;
     height: 35%;
     bottom: 1px;

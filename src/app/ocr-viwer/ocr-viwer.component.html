@@ -19,8 +19,23 @@
                         <mat-card-subtitle>Snapshot</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content class="box-size">
-                        <div class="image-container" *ngIf="snapShot">
-                            <img [src]="snapShot">
+                        <div *ngIf="mrzSnapShot" class="thumbnail-container">
+                            <div class="thumbnail-container">
+                                <p>mrz</p>
+                                <div class="thumbnail id-thumbnail">
+                                    <img *ngIf="mrzSnapShot" [src]="mrzSnapShot"
+                                        (click)="setCurrentSnapShot(mrzSnapShot)">
+                                </div>
+                            </div>
+                            <div class="thumbnail-container">
+                                <p>id</p>
+                                <div class="thumbnail mrz-thumbnail">
+                                    <img *ngIf="idSnapShot" [src]="idSnapShot" (click)="setCurrentSnapShot(idSnapShot)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="image-container" *ngIf="currentSnapShot">
+                            <img [src]="currentSnapShot">
                         </div>
                     </mat-card-content>
                 </mat-card>
@@ -31,11 +46,27 @@
                         <mat-card-subtitle>Output</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content class="box-size">
-                        
+
                         <div *ngIf="!textReady" class="spaced">
                             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
                         </div>
-                        {{outPutText}}
+                        <div class="" *ngFor="let item of outputArr">
+                            <mat-card *ngIf="outputArr && textReady">
+                                <mat-card-content>
+                                    {{item.outputText}}
+                                </mat-card-content>
+                                <mat-card-actions class="center-items">
+                                    <button mat-button (click)="copyOutputText(item)">
+                                        <mat-icon>content_copy</mat-icon>
+                                    </button>
+                                    <button mat-button (click)="confirmOutputText(item)">
+                                        <mat-icon *ngIf="item.valid"
+                                            [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                        <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                                    </button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
                     </mat-card-content>
                 </mat-card>
             </div>
@@ -44,9 +75,11 @@
         <div class="spaced">
             <div class="button-container">
                 <!-- <span><i class="material-icons">add_a_photo</i></span> -->
-                <button mat-fab extended (click)="prepareImageOutput()">
-                    <mat-icon>directions_run</mat-icon>
-                    Run
+                <!-- <button mat-fab extended (click)="prepareImageOutputTessaract()"> -->
+                <button mat-fab extended (click)="prepareImageOutputDynamsoft()">
+                    <!-- <mat-icon>directions_run</mat-icon> -->
+                    <mat-icon>feature_search</mat-icon>
+                    Scan
                 </button>
             </div>
         </div>

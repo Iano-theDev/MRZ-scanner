@@ -20,7 +20,9 @@ import html2canvas from 'html2canvas';
 
 export class CameraDialogComponent implements OnInit {
   
-  @ViewChild('idArea') idArea!: ElementRef<HTMLDivElement>
+  @ViewChild('idAreaRef') idAreaDiv!: ElementRef<HTMLDivElement>
+  @ViewChild('webcamIdAreaRef') webcamIdAreaDiv!: ElementRef<HTMLDivElement>
+  @ViewChild('canvas') canvasDiv!: ElementRef<HTMLCanvasElement>
   
   permisionStatus: string | undefined;
   camData: any = null;
@@ -39,7 +41,9 @@ export class CameraDialogComponent implements OnInit {
 };
   
   // test
-  croppedImage: any = '';
+  croppedIdZone: any = '';
+  croppedIdZone64: any = '';
+  croppedMrzZone: any;
   constructor(private dialogRef: MatDialogRef<CameraDialogComponent>) { }
 
   ngOnInit(): void {
@@ -76,6 +80,48 @@ export class CameraDialogComponent implements OnInit {
     // const idAreaElement = this.idArea?.nativeElement
     this.capturedImage = event.imageAsDataUrl
     this.imageToCrop = event.imageAsBase64
+    const canvas = this.canvasDiv.nativeElement;
+    const context = canvas.getContext('2d');
+    const idArea = this.webcamIdAreaDiv.nativeElement;
+
+    if (context) {
+      const image = new Image();
+      image.src = this.capturedImage
+
+      image.onload = () => {
+        // Draw the full captured image onto the canvas
+        context.drawImage(image, 0, 0, image.width, image.height);
+
+        // Get the position and size of the id-area overlay
+        const rect = idArea.getBoundingClientRect();
+        const x = rect.left;
+        const y = rect.top;
+        const width = rect.width;
+        const height = rect.height;
+
+        // Calculate the scale factor for the canvas
+        const scaleX = canvas.width / image.width;
+        const scaleY = canvas.height / image.height;
+
+        // Scale the coordinates and dimensions
+        const scaledX = x * scaleX;
+        const scaledY = y * scaleY;
+        const scaledWidth = width * scaleX;
+        const scaledHeight = height * scaleY;
+
+        // Get the image data for the id-area overlay
+        const croppedIdZoneData = context.getImageData(scaledX, scaledY, scaledWidth, scaledHeight);
+
+        // Clear the canvas and resize it to the cropped area
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
+
+        // Draw the cropped image data onto the canvas
+        context.putImageData(croppedIdZoneData, 0, 0);
+      };
+    }
+ 
   }
 
 
@@ -84,7 +130,9 @@ export class CameraDialogComponent implements OnInit {
     // console.log("Snapshot taken", this.capturedImage);
 
     console.log("Snapshot taken");
-    this.croppingID = true
+ 
+    this.croppingID = true;
+    // this.cropIdZone()
 
     // this line should only exectute after the image is cropped
     // this.dialogRef.close(this.capturedImage)
@@ -94,6 +142,34 @@ export class CameraDialogComponent implements OnInit {
 
   }
 
+  cropIdZone()  {
+    console.log("Cropping id zone");
+    
+ 
+    this.croppingID = false;
+    this.croppingMRZ = true
+
+   if (this.idAreaDiv) {
+     
+     const width = this.idAreaDiv.nativeElement.offsetWidth;
+     const height = this.idAreaDiv.nativeElement.offsetHeight;
+     console.log("Got id area div", width)
+   }
+
+
+  }
+
+  cropMrzZone() {
+    console.log("Cropping MRZ zone");
+
+   
+    let imageObj = {
+      id: this.croppedIdZone,
+      mrz: this.croppedMrzZone
+    }
+    this.croppingMRZ = false
+    this.dialogRef.close(imageObj)
+  }
   switchCamera(statusOrId: boolean | string) {
     this.nextCamera.next(statusOrId);
   }
@@ -108,12 +184,25 @@ export class CameraDialogComponent implements OnInit {
     return this.nextCamera.asObservable();
   }
 
-  imageCropped(event: ImageCroppedEvent) {
-    this.croppedImage = event.objectUrl;
+  idCropped(event: ImageCroppedEvent) {
+    this.croppedIdZone = event.objectUrl;
+    this.croppedIdZone64 = event.base64
+  }
+
+  mrzCropped(event: ImageCroppedEvent) {
+    this.croppedMrzZone = event.objectUrl;
   }
 
   cropCurrentDimensions () {
-    this.dialogRef.close(this.croppedImage)
+    this.croppingID = false;
+     this.croppingMRZ = true
+    if (this.idAreaDiv) {
+      
+      const width = this.idAreaDiv.nativeElement.offsetWidth;
+      const height = this.idAreaDiv.nativeElement.offsetHeight;
+      console.log("Got id area div", width)
+    }
+    // this.dialogRef.close(this.croppedIdZone)
   }
   imageLoaded() {
     // show cropper
