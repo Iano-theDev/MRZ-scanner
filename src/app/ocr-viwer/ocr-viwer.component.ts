@@ -89,6 +89,10 @@ export class OcrViwerComponent {
     await worker.terminate();
   }
 
+  prepareImageOutputDynamsoft () {
+    
+  }
+
   setCurrentSnapShot(snapShot: any) {
     this.currentSnapShot = snapShot
   }
