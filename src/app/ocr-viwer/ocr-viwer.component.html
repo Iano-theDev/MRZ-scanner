@@ -8,6 +8,12 @@
                 <!-- <button mat-fab (click)="logSomething()"> -->
                 <mat-icon>add_a_photo</mat-icon>
             </button>
+            <div class="">
+                <mat-button-toggle-group name="activeModel" [(ngModel)]="activeModel" aria-label="Font Style">
+                    <mat-button-toggle value="tessaract">Tessaract</mat-button-toggle>
+                    <mat-button-toggle value="dynamsoft">Dynamsoft</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
         </div>
     </div>
 
@@ -75,12 +81,18 @@
         <div class="spaced">
             <div class="button-container">
                 <!-- <span><i class="material-icons">add_a_photo</i></span> -->
-                <button mat-fab extended (click)="prepareImageOutputTessaract()">
-                <!-- <button mat-fab extended (click)="prepareImageOutputDynamsoft()"> -->
+                <!-- <button mat-fab extended (click)="prepareImageOutputTessaract()"> -->
+                <button *ngIf="activeModel === 'dynamsoft'" mat-fab extended (click)="prepareImageOutputDynamsoft()">
                     <!-- <mat-icon>directions_run</mat-icon> -->
                     <mat-icon>feature_search</mat-icon>
                     Scan
                 </button>
+                  <button *ngIf="activeModel === 'tessaract'" mat-fab extended (click)="prepareImageOutputTessaract()">
+                    <!-- <button mat-fab extended (click)="prepareImageOutputDynamsoft()"> -->
+                        <!-- <mat-icon>directions_run</mat-icon> -->
+                        <mat-icon>feature_search</mat-icon>
+                        Scan
+                    </button>
             </div>
         </div>
 

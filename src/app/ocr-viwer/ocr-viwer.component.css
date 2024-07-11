@@ -5,6 +5,9 @@
 }
 .spaced {
     margin: 1em;
+    display: flex;
+    flex-direction: row;
+    gap: 2em;
 }
 
 .center-items {

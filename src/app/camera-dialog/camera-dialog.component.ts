@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { WebcamImage, WebcamModule, WebcamUtil } from 'ngx-webcam';
 import { ImageCroppedEvent, ImageCropperComponent, ImageTransform } from 'ngx-image-cropper';
 import html2canvas from 'html2canvas';
+import { BarcodeReader } from 'dynamsoft-javascript-barcode';
 
 
 @Component({
@@ -46,8 +47,12 @@ export class CameraDialogComponent implements OnInit {
   croppedMrzZone: any;
   constructor(private dialogRef: MatDialogRef<CameraDialogComponent>) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    // BarcodeReader.license = 'DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ==';
+
     this.checkPermision()
+
+    
   }
 
   checkPermision = async () => {
@@ -80,47 +85,47 @@ export class CameraDialogComponent implements OnInit {
     // const idAreaElement = this.idArea?.nativeElement
     this.capturedImage = event.imageAsDataUrl
     this.imageToCrop = event.imageAsBase64
-    const canvas = this.canvasDiv.nativeElement;
-    const context = canvas.getContext('2d');
-    const idArea = this.webcamIdAreaDiv.nativeElement;
+    // const canvas = this.canvasDiv.nativeElement;
+    // const context = canvas.getContext('2d');
+    // const idArea = this.webcamIdAreaDiv.nativeElement;
 
-    if (context) {
-      const image = new Image();
-      image.src = this.capturedImage
+    // if (context) {
+    //   const image = new Image();
+    //   image.src = this.capturedImage
 
-      image.onload = () => {
-        // Draw the full captured image onto the canvas
-        context.drawImage(image, 0, 0, image.width, image.height);
+    //   image.onload = () => {
+    //     // Draw the full captured image onto the canvas
+    //     context.drawImage(image, 0, 0, image.width, image.height);
 
-        // Get the position and size of the id-area overlay
-        const rect = idArea.getBoundingClientRect();
-        const x = rect.left;
-        const y = rect.top;
-        const width = rect.width;
-        const height = rect.height;
+    //     // Get the position and size of the id-area overlay
+    //     const rect = idArea.getBoundingClientRect();
+    //     const x = rect.left;
+    //     const y = rect.top;
+    //     const width = rect.width;
+    //     const height = rect.height;
 
-        // Calculate the scale factor for the canvas
-        const scaleX = canvas.width / image.width;
-        const scaleY = canvas.height / image.height;
+    //     // Calculate the scale factor for the canvas
+    //     const scaleX = canvas.width / image.width;
+    //     const scaleY = canvas.height / image.height;
 
-        // Scale the coordinates and dimensions
-        const scaledX = x * scaleX;
-        const scaledY = y * scaleY;
-        const scaledWidth = width * scaleX;
-        const scaledHeight = height * scaleY;
+    //     // Scale the coordinates and dimensions
+    //     const scaledX = x * scaleX;
+    //     const scaledY = y * scaleY;
+    //     const scaledWidth = width * scaleX;
+    //     const scaledHeight = height * scaleY;
 
-        // Get the image data for the id-area overlay
-        const croppedIdZoneData = context.getImageData(scaledX, scaledY, scaledWidth, scaledHeight);
+    //     // Get the image data for the id-area overlay
+    //     const croppedIdZoneData = context.getImageData(scaledX, scaledY, scaledWidth, scaledHeight);
 
-        // Clear the canvas and resize it to the cropped area
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = scaledWidth;
-        canvas.height = scaledHeight;
+    //     // Clear the canvas and resize it to the cropped area
+    //     context.clearRect(0, 0, canvas.width, canvas.height);
+    //     canvas.width = scaledWidth;
+    //     canvas.height = scaledHeight;
 
-        // Draw the cropped image data onto the canvas
-        context.putImageData(croppedIdZoneData, 0, 0);
-      };
-    }
+    //     // Draw the cropped image data onto the canvas
+    //     context.putImageData(croppedIdZoneData, 0, 0);
+    //   };
+    // }
  
   }
 

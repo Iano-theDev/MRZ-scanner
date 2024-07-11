@@ -28,7 +28,7 @@
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": ["node_modules/dynamsoft-javascript-barcode/dist/dbr.js"]
           },
           "configurations": {
             "production": {

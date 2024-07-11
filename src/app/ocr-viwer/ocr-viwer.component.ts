@@ -6,11 +6,16 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatCardModule } from '@angular/material/card'
 import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CameraDialogComponent } from '../camera-dialog/camera-dialog.component';
 import { WebcamImage } from 'ngx-webcam';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as Tesseract from 'tesseract.js';
 import { threadId } from 'worker_threads';
+import { BarcodeReader, TextResult } from 'dynamsoft-javascript-barcode';
+import { log } from 'console';
+import { FormsModule } from '@angular/forms';
+
 interface outputObj {
   index: number;
   outputText: string;
@@ -19,7 +24,7 @@ interface outputObj {
 @Component({
   selector: 'app-ocr-viwer',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule, MatButtonToggleModule, FormsModule],
   // imports: [CommonModule],
   templateUrl: './ocr-viwer.component.html',
   styleUrls: ['./ocr-viwer.component.css']
@@ -32,7 +37,19 @@ export class OcrViwerComponent {
   textReady: boolean = true;
   counter: number = 0
   outputArr: outputObj[] = [];
-  constructor(private dialog: MatDialog, private _sanitizer: DomSanitizer) { }
+  private reader!: BarcodeReader
+  activeModel!: string 
+
+  constructor(private dialog: MatDialog, private _sanitizer: DomSanitizer) {
+    this.activeModel = 'tessaract'
+   }
+
+  ngOnInit() {
+    // BarcodeReader.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
+    BarcodeReader.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ==";
+    BarcodeReader.engineResourcePath = '/assets/';
+  }
+
 
   openCameraDialog() {
     const dialogRef = this.dialog.open(CameraDialogComponent, {
@@ -66,7 +83,7 @@ export class OcrViwerComponent {
       { logger: m => console.log("[m]: ", m) }
     )
     const imagePath =
-    await worker.load();
+      await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
     const { data: { text } } = await worker.recognize(this.mrzSnapShot);
@@ -75,12 +92,12 @@ export class OcrViwerComponent {
       this.textReady = true
       this.outPutText = text
       let obj: outputObj = {
-          outputText: text,
-          // index: this.outputArr ?  this.outputArr.length++ : 1
-          index: this.counter++
+        outputText: text,
+        // index: this.outputArr ?  this.outputArr.length++ : 1
+        index: this.counter++
       }
       console.log("[ outputObj ] is: ", obj);
-      
+
       this.outputArr.push(obj)
       console.log("[ outputArr ] is: ", this.outputArr);
 
@@ -89,8 +106,38 @@ export class OcrViwerComponent {
     await worker.terminate();
   }
 
-  prepareImageOutputDynamsoft () {
-    
+
+  prepareImageOutputDynamsoft = async () => {
+    // BarcodeReader.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ==";
+  
+
+    try {
+      console.log("Startting");
+
+      // Initialize the Barcode Reader
+      this.reader = await BarcodeReader.createInstance();
+
+      if (this.reader) {
+        console.log("We've successfully created a reader!");
+
+
+        // Decode the image data directly
+        const results: TextResult[] = await this.reader.decode(this.mrzSnapShot);
+
+        // Handle the results
+        if (results.length) {
+          console.log('MRZ Results:', results);
+        } else {
+          console.log('No MRZ found in the image.', results);
+        }
+      } else {
+        console.log("No reader created yet");
+
+      }
+
+    } catch (error) {
+      console.error('Error reading image:', error);
+    }
   }
 
   setCurrentSnapShot(snapShot: any) {

@@ -6,7 +6,8 @@
     "start": "ng s -o",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "cp ./node_modules/dynamsoft-javascript-barcode/dist/* ./src/assets/"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +25,8 @@
     "angular-cropperjs": "^14.0.1",
     "buffer": "^6.0.3",
     "cropper": "^4.1.0",
+    "dm-fabric": "^5.1.17",
+    "dynamsoft-javascript-barcode": "^9.6.42",
     "html2canvas": "^1.4.1",
     "ngx-image-cropper": "^8.0.0",
     "ngx-webcam": "^0.4.1",
