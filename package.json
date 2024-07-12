@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "postinstall": "mkdir ./src/assets/dynamsoft/ && cp ./node_modules/dynamsoft-javascript-barcode/dist/* ./src/assets/dynamsoft/"
+    "postinstall": "cp ./node_modules/dynamsoft-javascript-barcode/dist/* ./src/assets/dynamsoft/"
   },
   "private": true,
   "dependencies": {
