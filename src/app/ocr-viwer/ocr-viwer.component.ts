@@ -15,6 +15,7 @@ import { threadId } from 'worker_threads';
 import { BarcodeReader, TextResult } from 'dynamsoft-javascript-barcode';
 import { log } from 'console';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2'
 
 interface outputObj {
   index: number;
@@ -47,7 +48,7 @@ export class OcrViwerComponent {
   ngOnInit() {
     // BarcodeReader.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
     BarcodeReader.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ==";
-    BarcodeReader.engineResourcePath = '/assets/';
+    BarcodeReader.engineResourcePath = '/assets/dynamsoft/';
   }
 
 
@@ -128,6 +129,11 @@ export class OcrViwerComponent {
         if (results.length) {
           console.log('MRZ Results:', results);
         } else {
+          Swal.fire({
+            title: "Result Empty!",
+            text: "No MRZ found in the image.",
+            icon: "error"
+          })
           console.log('No MRZ found in the image.', results);
         }
       } else {

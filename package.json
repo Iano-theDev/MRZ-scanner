@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "postinstall": "cp ./node_modules/dynamsoft-javascript-barcode/dist/* ./src/assets/"
+    "postinstall": "mkdir ./src/assets/dynamsoft/ && cp ./node_modules/dynamsoft-javascript-barcode/dist/* ./src/assets/dynamsoft/"
   },
   "private": true,
   "dependencies": {
@@ -31,6 +31,7 @@
     "ngx-image-cropper": "^8.0.0",
     "ngx-webcam": "^0.4.1",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.12.2",
     "tesseract.js": "^2.1.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.3"

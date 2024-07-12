@@ -18,7 +18,6 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
