@@ -261,6 +261,16 @@ export class OcrViwerComponent {
         console.log('hi there ',(result as TextLineResultItem).text);
         res.push((result as TextLineResultItem).text);
       }
+      let text = res.join("\n");
+
+      let obj: outputObj = {
+        outputText: text,
+        model: 'dynamsoft',
+        // index: this.outputArr ?  this.outputArr.length++ : 1
+        index: this.counter++
+      }
+
+      this.outputArr.push(obj)
       // this.resRef.nativeElement!.innerText = res.join("\n");
       // this.iptRef.nativeElement!.value = '';
     } catch (ex: any) {
