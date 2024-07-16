@@ -16,9 +16,9 @@
             </div>
             <div class="">
                 <div class="capture-img">
-                    <div class="img-ipt"><input type="file" #iptRef (change)="captureImage($event)"/></div>
+                    <div class="img-ipt"><input type="file" #iptRef (change)="captureImage($event)" /></div>
                     <div class="result-area" #resRef></div>
-                  </div> 
+                </div>
             </div>
         </div>
     </div>
@@ -52,8 +52,37 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div class="box">
-                <mat-card apprearance="outlined">
+            <div class="">
+                <h3 *ngIf="outputArr && textReady">Output</h3>
+                <div class="output-card-container " *ngFor="let item of outputArr">
+                    <mat-card *ngIf="outputArr && textReady" class="output-card">
+
+                        <div class="center-items">
+                            <mat-chip>{{item.model }}</mat-chip>
+                            <button mat-button (click)="copyOutputText(item)">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                            <button mat-button (click)="confirmOutputText(item)">
+                                <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                            </button>
+                        </div>
+                        <br>
+                        <mat-card-content>
+                            {{item.outputText}}
+                        </mat-card-content>
+                        <!-- <mat-card-actions class="center-items">
+                            <button mat-button (click)="copyOutputText(item)">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                            <button mat-button (click)="confirmOutputText(item)">
+                                <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                            </button>
+                        </mat-card-actions> -->
+                    </mat-card>
+                </div>
+                <!-- <mat-card apprearance="outlined">
                     <mat-card-header>
                         <mat-card-subtitle>Output</mat-card-subtitle>
                     </mat-card-header>
@@ -81,7 +110,7 @@
                             </mat-card>
                         </div>
                     </mat-card-content>
-                </mat-card>
+                </mat-card> -->
             </div>
         </div>
 
@@ -94,12 +123,12 @@
                     <mat-icon>feature_search</mat-icon>
                     Scan
                 </button>
-                  <button *ngIf="activeModel === 'tessaract'" mat-fab extended (click)="prepareImageOutputTessaract()">
+                <button *ngIf="activeModel === 'tessaract'" mat-fab extended (click)="prepareImageOutputTessaract()">
                     <!-- <button mat-fab extended (click)="prepareImageOutputDynamsoft()"> -->
-                        <!-- <mat-icon>directions_run</mat-icon> -->
-                        <mat-icon>feature_search</mat-icon>
-                        Scan
-                    </button>
+                    <!-- <mat-icon>directions_run</mat-icon> -->
+                    <mat-icon>feature_search</mat-icon>
+                    Scan
+                </button>
             </div>
         </div>
 

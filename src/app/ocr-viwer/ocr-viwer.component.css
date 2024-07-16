@@ -65,6 +65,20 @@
     align-items: center;
 }
 
+.output-card-container {
+    display: flex;
+    flex-direction: column;
+    padding: .5em;
+    gap: .5em;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.output-card {
+    width: 300px;
+    height: 150px;
+}
 /* .mrz-thumbnail img {
     width: 100%;
     height: 100%;
