@@ -52,66 +52,77 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div class="">
-                <h3 *ngIf="outputArr && textReady">Output</h3>
-                <div class="output-card-container " *ngFor="let item of outputArr">
-                    <mat-card *ngIf="outputArr && textReady" class="output-card">
-
-                        <div class="center-items">
-                            <mat-chip>{{item.model }}</mat-chip>
-                            <button mat-button (click)="copyOutputText(item)">
-                                <mat-icon>content_copy</mat-icon>
-                            </button>
-                            <button mat-button (click)="confirmOutputText(item)">
-                                <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
-                                <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
-                            </button>
-                        </div>
-                        <br>
-                        <mat-card-content>
-                            {{item.outputText}}
+            <div class="box">
+                <!-- <mat-spinner class="spinner-overlay" *ngIf="!outputArr || !textReady" ></mat-spinner> -->
+                <div class="">
+                    <h3>Output</h3>
+                    <div *ngIf="!outputArr || !textReady" class="spinner-container">
+                        <mat-spinner class="spinner-overlay" ></mat-spinner>
+                    </div>
+                    <div class="output-card-container " *ngFor="let item of outputArr">
+                        <mat-card class="output-card">
+                            <!-- <mat-card *ngIf="outputArr && textReady" class="output-card"> -->
+    
+                            <div class="center-items">
+                                <mat-chip>{{item.model }}</mat-chip>
+                                <button mat-button (click)="copyOutputText(item)">
+                                    <mat-icon>content_copy</mat-icon>
+                                </button>
+                                <button mat-button (click)="confirmOutputText(item)">
+                                    <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                    <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                                </button>
+                                <button mat-button (click)="deleteItem(item)">
+                                    <mat-icon class="hover-danger">delete</mat-icon>
+                                </button>
+                            </div>
+                            <br>
+                            <mat-card-content>
+                                {{item.outputText}}
+                            </mat-card-content>
+                            <!-- <mat-card-actions class="center-items">
+                                <button mat-button (click)="copyOutputText(item)">
+                                    <mat-icon>content_copy</mat-icon>
+                                </button>
+                                <button mat-button (click)="confirmOutputText(item)">
+                                    <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                    <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                                </button>
+                            </mat-card-actions> -->
+                        </mat-card>
+                    </div>
+                    <!-- <mat-card apprearance="outlined">
+                        <mat-card-header>
+                            <mat-card-subtitle>Output</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content class="box-size">
+    
+                            <div *ngIf="!textReady" class="spaced">
+                                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                            </div>
+                            <div class="" *ngFor="let item of outputArr">
+                                <mat-card *ngIf="outputArr && textReady">
+                                    <mat-chip>{{item.model}}</mat-chip><br>
+                                    <mat-card-content>
+                                        {{item.outputText}}
+                                    </mat-card-content>
+                                    <mat-card-actions class="center-items">
+                                        <button mat-button (click)="copyOutputText(item)">
+                                            <mat-icon>content_copy</mat-icon>
+                                        </button>
+                                        <button mat-button (click)="confirmOutputText(item)">
+                                            <mat-icon *ngIf="item.valid"
+                                                [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
+                                            <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
+                                        </button>
+                                    </mat-card-actions>
+                                </mat-card>
+                            </div>
                         </mat-card-content>
-                        <!-- <mat-card-actions class="center-items">
-                            <button mat-button (click)="copyOutputText(item)">
-                                <mat-icon>content_copy</mat-icon>
-                            </button>
-                            <button mat-button (click)="confirmOutputText(item)">
-                                <mat-icon *ngIf="item.valid" [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
-                                <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
-                            </button>
-                        </mat-card-actions> -->
-                    </mat-card>
+                    </mat-card> -->
                 </div>
-                <!-- <mat-card apprearance="outlined">
-                    <mat-card-header>
-                        <mat-card-subtitle>Output</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content class="box-size">
-
-                        <div *ngIf="!textReady" class="spaced">
-                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-                        </div>
-                        <div class="" *ngFor="let item of outputArr">
-                            <mat-card *ngIf="outputArr && textReady">
-                                <mat-chip>{{item.model}}</mat-chip><br>
-                                <mat-card-content>
-                                    {{item.outputText}}
-                                </mat-card-content>
-                                <mat-card-actions class="center-items">
-                                    <button mat-button (click)="copyOutputText(item)">
-                                        <mat-icon>content_copy</mat-icon>
-                                    </button>
-                                    <button mat-button (click)="confirmOutputText(item)">
-                                        <mat-icon *ngIf="item.valid"
-                                            [ngStyle]="{ 'color': 'green' }">check_circle</mat-icon>
-                                        <mat-icon *ngIf="!item.valid">check_circle</mat-icon>
-                                    </button>
-                                </mat-card-actions>
-                            </mat-card>
-                        </div>
-                    </mat-card-content>
-                </mat-card> -->
             </div>
+
         </div>
 
         <div class="spaced">

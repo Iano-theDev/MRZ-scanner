@@ -6,8 +6,8 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatCardModule } from '@angular/material/card'
 import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatChipsModule } from '@angular/material/chips';
 import { CameraDialogComponent } from '../camera-dialog/camera-dialog.component';
 import { WebcamImage } from 'ngx-webcam';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -23,6 +23,9 @@ import * as Dynamsoft from 'dynamsoft-label-recognizer';
 import type { TextLineResultItem } from "dynamsoft-label-recognizer";
 import { CaptureVisionRouter } from "dynamsoft-capture-vision-router";
 import { LicenseManager } from 'dynamsoft-license';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 interface outputObj {
@@ -34,7 +37,7 @@ interface outputObj {
 @Component({
   selector: 'app-ocr-viwer',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule, MatButtonToggleModule, FormsModule, MatChipsModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule, MatButtonToggleModule, FormsModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule],
   // imports: [CommonModule],
   templateUrl: './ocr-viwer.component.html',
   styleUrls: ['./ocr-viwer.component.css']
@@ -56,9 +59,9 @@ export class OcrViwerComponent {
   constructor(private dialog: MatDialog, private _sanitizer: DomSanitizer) {
     this.activeModel = 'tessaract'
     this.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ=="
-        // this.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
+    // this.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
 
-   }
+  }
 
   ngOnInit() {
     // BarcodeReader.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9";
@@ -68,7 +71,7 @@ export class OcrViwerComponent {
     try {
 
       this.captureVisionRouterPromise = CaptureVisionRouter.createInstance()
-    } catch(error: any) {
+    } catch (error: any) {
       console.log("Error creation capture vision router instance", error)
     }
 
@@ -104,35 +107,45 @@ export class OcrViwerComponent {
 
   prepareImageOutputTessaract = async () => {
     this.textReady = false
-    const worker = Tesseract.createWorker(
-      { logger: m => console.log("[m]: ", m) }
-    )
-    const imagePath =
-      await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-    const { data: { text } } = await worker.recognize(this.mrzSnapShot);
-    console.log("Text ", text);
-    if (text) {
-      this.textReady = true
-      this.outPutText = text
-      let obj: outputObj = {
-        outputText: text,
-        model: 'tessaract',
-        // index: this.outputArr ?  this.outputArr.length++ : 1
-        index: this.counter++
-      }
-      console.log("[ outputObj ] is: ", obj);
-
-      this.outputArr.push(obj)
-      console.log("[ outputArr ] is: ", this.outputArr);
-
-
+   try { const worker = Tesseract.createWorker(
+    { logger: m => console.log("[m]: ", m) }
+  )
+  const imagePath =
+    await worker.load();
+  await worker.loadLanguage('eng');
+  await worker.initialize('eng');
+  const { data: { text } } = await worker.recognize(this.mrzSnapShot);
+  console.log("Text ", text);
+  if (text) {
+    this.textReady = true
+    this.outPutText = text
+    let obj: outputObj = {
+      outputText: text,
+      model: 'tessaract',
+      // index: this.outputArr ?  this.outputArr.length++ : 1
+      index: this.counter++
     }
-    await worker.terminate();
+    console.log("[ outputObj ] is: ", obj);
+
+    this.outputArr.push(obj)
+    console.log("[ outputArr ] is: ", this.outputArr);
+
+
+  }
+  await worker.terminate();
+    
+   } catch (error: any) {
+    this.textReady = true
+    Swal.fire({
+      title: "Result Empty!",
+      text: error,
+      icon: "error"
+    })
+   }
   }
 
   prepareImageOutputDynamsoft = async () => {
+    this.textReady = false
     try {
       console.log("Startting label recorgnizer");
       // this.resRef!.innerText = "";
@@ -140,12 +153,13 @@ export class OcrViwerComponent {
       const results = await router!.capture(this.mrzSnapShot);
       const res = [];
       for (let result of results.items) {
-        console.log('hi there ',(result as TextLineResultItem).text);
+        console.log('hi there ', (result as TextLineResultItem).text);
         res.push((result as TextLineResultItem).text);
 
 
       }
       let text = res.join("\n");
+      if (text) this.textReady = true
 
       let obj: outputObj = {
         outputText: text,
@@ -157,16 +171,22 @@ export class OcrViwerComponent {
       this.outputArr.push(obj)
       // this.iptRef.nativeElement!.value = '';
     } catch (ex: any) {
+      this.textReady = true
       let errMsg = ex.message || ex;
       console.error(errMsg);
-      alert(errMsg);
+      Swal.fire({
+        title: "Result Empty!",
+        text: errMsg,
+        icon: "error"
+      })
+      // alert(errMsg);
     }
   }
 
 
   // prepareImageOutputDynamsoft = async () => {
   //   // BarcodeReader.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ==";
-  
+
 
   //   try {
   //     console.log("Startting");
@@ -204,7 +224,7 @@ export class OcrViwerComponent {
   // prepareImageOutputDynamsoft = async () => {
   //   // const router = await this.captureVisionRouterPromise;
   //   // const results = await router!.capture(this.mrzSnapShot)
-  
+
 
   //   try {
   //     console.log("Startting label recorgnizer");
@@ -214,10 +234,10 @@ export class OcrViwerComponent {
   //     if (router) {
   //       console.log("router has been created");
   //       results = await router.capture(this.mrzSnapShot)
-        
+
   //     } 
   //     console.log("Router was not created!");
-      
+
 
   //     // Initialize the Barcode Reader
   //     // this.reader = await BarcodeReader.createInstance();
@@ -250,18 +270,20 @@ export class OcrViwerComponent {
   //   }
   // }
 
-  
+
   captureImage = async (e: any) => {
+    this.textReady = false
     try {
       // this.resRef!.innerText = "";
       const router = await this.captureVisionRouterPromise;
       const results = await router!.capture(e.target.files[0]);
       const res = [];
       for (let result of results.items) {
-        console.log('hi there ',(result as TextLineResultItem).text);
+        console.log('hi there ', (result as TextLineResultItem).text);
         res.push((result as TextLineResultItem).text);
       }
       let text = res.join("\n");
+      if (text) this.textReady = true
 
       let obj: outputObj = {
         outputText: text,
@@ -274,9 +296,15 @@ export class OcrViwerComponent {
       // this.resRef.nativeElement!.innerText = res.join("\n");
       // this.iptRef.nativeElement!.value = '';
     } catch (ex: any) {
+      this.textReady = true
       let errMsg = ex.message || ex;
       console.error(errMsg);
-      alert(errMsg);
+      Swal.fire({
+        title: "Result Empty!",
+        text: errMsg,
+        icon: "error"
+      })
+      // alert(errMsg);
     }
   }
 
@@ -299,6 +327,10 @@ export class OcrViwerComponent {
       }
     })
     console.log("New item is: ", item)
+  }
+  deleteItem(item: outputObj) {
+    console.log("deleting: ", item.index)
+    this.outputArr = this.outputArr.filter(obj => obj.index !== item.index)
   }
 
   logSomething() {
