@@ -45,6 +45,7 @@ export class CameraDialogComponent implements OnInit {
   croppedIdZone: any = '';
   croppedIdZone64: any = '';
   croppedMrzZone: any;
+  croppedMrzZone64: any;
   constructor(private dialogRef: MatDialogRef<CameraDialogComponent>) { }
 
   ngOnInit() {
@@ -85,6 +86,8 @@ export class CameraDialogComponent implements OnInit {
     // const idAreaElement = this.idArea?.nativeElement
     this.capturedImage = event.imageAsDataUrl
     this.imageToCrop = event.imageAsBase64
+    console.log("[capture] taking a snap!", this.imageToCrop);
+
     // const canvas = this.canvasDiv.nativeElement;
     // const context = canvas.getContext('2d');
     // const idArea = this.webcamIdAreaDiv.nativeElement;
@@ -170,7 +173,9 @@ export class CameraDialogComponent implements OnInit {
    
     let imageObj = {
       id: this.croppedIdZone,
-      mrz: this.croppedMrzZone
+      mrz: this.croppedMrzZone,
+      id64: "",
+      mrz64: ""
     }
     this.croppingMRZ = false
     this.dialogRef.close(imageObj)
@@ -190,12 +195,16 @@ export class CameraDialogComponent implements OnInit {
   }
 
   idCropped(event: ImageCroppedEvent) {
-    this.croppedIdZone = event.objectUrl;
-    this.croppedIdZone64 = event.base64
+    this.croppedIdZone = event.blob;
+    this.croppedIdZone64 = event.blob
+    console.log("[idBlob ]: ", this.croppedIdZone64);
+    
   }
 
   mrzCropped(event: ImageCroppedEvent) {
-    this.croppedMrzZone = event.objectUrl;
+    this.croppedMrzZone = event.blob;
+    this.croppedMrzZone64 = event.blob
+    console.log("[base64 mrz]: ", this.croppedMrzZone64);
   }
 
   cropCurrentDimensions () {

@@ -14,10 +14,13 @@
                     <mat-button-toggle value="dynamsoft">Dynamsoft</mat-button-toggle>
                 </mat-button-toggle-group>
             </div>
-            <div class="">
+            <div class="view-containers">
                 <div class="capture-img">
                     <div class="img-ipt"><input type="file" #iptRef (change)="captureImage($event)" /></div>
                     <div class="result-area" #resRef></div>
+                </div>
+                <div class="">
+                    <mat-slide-toggle [(ngModel)]="useServer" labelPosition="before">User Server!</mat-slide-toggle>
                 </div>
             </div>
         </div>

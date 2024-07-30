@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatToolbarModule } from '@angular/material/toolbar'
-import { MatCardModule } from '@angular/material/card'
+import { MatCardModule, MatCardXlImage } from '@angular/material/card'
 import { MatProgressBarModule } from '@angular/material/progress-bar'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -26,6 +26,8 @@ import { LicenseManager } from 'dynamsoft-license';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MrzService } from '../services/mrz.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 
 interface outputObj {
@@ -37,14 +39,16 @@ interface outputObj {
 @Component({
   selector: 'app-ocr-viwer',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule, MatButtonToggleModule, FormsModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatToolbarModule, MatCardModule, MatDialogModule, MatProgressBarModule, MatButtonToggleModule, FormsModule, MatChipsModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatSlideToggleModule],
   // imports: [CommonModule],
   templateUrl: './ocr-viwer.component.html',
-  styleUrls: ['./ocr-viwer.component.css']
+  styleUrls: ['./ocr-viwer.component.css'],
+  providers: [MrzService]
 })
 export class OcrViwerComponent {
   idSnapShot: any;
   mrzSnapShot: any;
+  mrzSnapShotBlob: any;
   currentSnapShot: any;
   outPutText: string = ''
   textReady: boolean = true;
@@ -55,12 +59,12 @@ export class OcrViwerComponent {
   license!: string;
   captureVisionRouterPromise: Promise<CaptureVisionRouter> | null = null
   testPromise: any
+  useServer: boolean = true
 
-  constructor(private dialog: MatDialog, private _sanitizer: DomSanitizer) {
+  constructor(private dialog: MatDialog, private mrzservice: MrzService, private _sanitizer: DomSanitizer) {
     this.activeModel = 'tessaract'
     this.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMTAzMDAwNjExLVRYbFhaV0pRY205cSIsIm1haW5TZXJ2ZXJVUkwiOiJodHRwczovL21kbHMuZHluYW1zb2Z0b25saW5lLmNvbSIsIm9yZ2FuaXphdGlvbklEIjoiMTAzMDAwNjExIiwic3RhbmRieVNlcnZlclVSTCI6Imh0dHBzOi8vc2Rscy5keW5hbXNvZnRvbmxpbmUuY29tIiwiY2hlY2tDb2RlIjoyMTA2NzEyNTI0fQ=="
     // this.license = "DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9"
-
   }
 
   ngOnInit() {
@@ -74,8 +78,6 @@ export class OcrViwerComponent {
     } catch (error: any) {
       console.log("Error creation capture vision router instance", error)
     }
-
-
   }
 
 
@@ -95,56 +97,108 @@ export class OcrViwerComponent {
         console.log("[result] from dialog ref onClose: "), result;
         // this.snapShot = this._sanitizer.bypassSecurityTrustResourceUrl('data: image/jpg;base64,' + result)
         // this.snapShot = this._sanitizer.bypassSecurityTrustResourceUrl(result.imageAsBase64)
-        this.idSnapShot = result.id
-        this.mrzSnapShot = result.mrz
+        this.idSnapShot = URL.createObjectURL(result.id)
+        this.mrzSnapShotBlob = result.mrz
+        this.mrzSnapShot = URL.createObjectURL(result.mrz)
         this.currentSnapShot = this.mrzSnapShot
-
-
-
       }
     })
   }
 
   prepareImageOutputTessaract = async () => {
-    this.textReady = false
-   try { const worker = Tesseract.createWorker(
-    { logger: m => console.log("[m]: ", m) }
-  )
-  const imagePath =
-    await worker.load();
-  await worker.loadLanguage('eng');
-  await worker.initialize('eng');
-  const { data: { text } } = await worker.recognize(this.mrzSnapShot);
-  console.log("Text ", text);
-  if (text) {
-    this.textReady = true
-    this.outPutText = text
-    let obj: outputObj = {
-      outputText: text,
-      model: 'tessaract',
-      // index: this.outputArr ?  this.outputArr.length++ : 1
-      index: this.counter++
-    }
-    console.log("[ outputObj ] is: ", obj);
-
-    this.outputArr.push(obj)
-    console.log("[ outputArr ] is: ", this.outputArr);
-
-
-  }
-  await worker.terminate();
+    // const formData = new FormData();
+    // formData.append('image', this.mrzSnapShot, 'image.jpg');
+    if (this.useServer) {
+      if (this.mrzSnapShotBlob) {
+        this.textReady = false
+        this.mrzservice.getMrzText(this.mrzSnapShotBlob).subscribe({
+          next: (res: any) => {
+            console.log("[Typeof] image sent to server: ", typeof this.mrzSnapShot)
+            console.log("Response from TS-python server is: ", res)
+            this.textReady = true
+            this.outPutText = res.tessaract_output
     
-   } catch (error: any) {
-    this.textReady = true
-    Swal.fire({
-      title: "Result Empty!",
-      text: error,
-      icon: "error"
-    })
-   }
+            let obj: outputObj = {
+                  outputText: this.outPutText,
+                  model: 'tsrct-server',
+                  // index: this.outputArr ?  this.outputArr.length++ : 1
+                  index: this.counter++
+                }
+    
+                this.outputArr.push(obj)
+          },
+          error: reason=> {
+            this.textReady = true
+            console.log("Response from TS-python server is: ", reason)
+            Swal.fire({
+              title: "Server Error!",
+              text: reason.error.message ? reason.error.message : "There has been a server error",
+              icon: "error"
+            })
+             return
+          }
+        })
+      }
+      else {
+        this.textReady = true
+        Swal.fire({
+          title: "Image Error!",
+          text: "No Mrz image provided",
+          icon: "error"
+        })
+
+        return
+      }
+    }
+    else {
+      this.textReady = false
+      try { const worker = Tesseract.createWorker(
+        // { logger: m => console.log("[m]: ", m) }
+      )
+      const imagePath =
+      await worker.load();
+      await worker.loadLanguage('eng');
+      await worker.initialize('eng');
+      const { data: { text } } = await worker.recognize(this.mrzSnapShot);
+      console.log("Text ", text);
+      if (text) {
+        this.textReady = true
+        // this.outPutText = text
+        let obj: outputObj = {
+          outputText: text,
+          model: 'tessaract',
+          index: this.counter++
+        }
+        console.log("[ outputObj ] is: ", obj);
+    
+        this.outputArr.push(obj)
+        console.log("[ outputArr ] is: ", this.outputArr);
+    
+    
+      }
+      await worker.terminate();
+        
+       } catch (error: any) {
+        this.textReady = true
+        Swal.fire({
+          title: "Result Empty!",
+          text: error,
+          icon: "error"
+        })
+       }
+    }
+
   }
 
   prepareImageOutputDynamsoft = async () => {
+    this.mrzservice.pingTessaractServer().subscribe({
+      next: res => {
+        console.log("Response from TS-python server is: ", res)
+      },
+      error: reason=> {
+        console.log("Response from TS-python server is: ", reason)
+      }
+    })
     this.textReady = false
     try {
       console.log("Startting label recorgnizer");
@@ -155,8 +209,6 @@ export class OcrViwerComponent {
       for (let result of results.items) {
         console.log('hi there ', (result as TextLineResultItem).text);
         res.push((result as TextLineResultItem).text);
-
-
       }
       let text = res.join("\n");
       if (text) this.textReady = true
