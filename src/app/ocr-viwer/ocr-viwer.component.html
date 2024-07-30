@@ -20,7 +20,7 @@
                     <div class="result-area" #resRef></div>
                 </div>
                 <div class="">
-                    <mat-slide-toggle [(ngModel)]="useServer" labelPosition="before">User Server!</mat-slide-toggle>
+                    <mat-slide-toggle [(ngModel)]="useServer" labelPosition="before" [disabled]="activeModel === 'dynamsoft'">User Server!</mat-slide-toggle>
                 </div>
             </div>
         </div>
