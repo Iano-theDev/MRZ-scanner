@@ -1,5 +1,8 @@
 # OCRScanner
 
+![image](https://github.com/user-attachments/assets/598acbdf-71cf-44b8-9283-d59154f27e1d)
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.2.
 
 ## Development server
